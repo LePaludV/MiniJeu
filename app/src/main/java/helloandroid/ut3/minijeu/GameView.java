@@ -12,11 +12,14 @@ import androidx.annotation.NonNull;
 
 public class GameView extends SurfaceView implements
         SurfaceHolder.Callback {
-    private GameThread thread;
+    private final GameThread thread;
+    private SharedPreferences sharedPref;
+    private int valeur_y;
     private int x=0;
-    private int y =0;
-    public GameView(Context context) {
+
+    public GameView(Context context, SharedPreferences sharedPref) {
         super(context);
+        this.sharedPref = sharedPref;
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
@@ -56,22 +59,16 @@ public class GameView extends SurfaceView implements
             Paint paint = new Paint();
             paint.setColor(Color.rgb(250, 0, 0));
 
-            canvas.drawRect(x, getPreferences(getContext(),"valeur_y"), x+100, 200, paint);
+            valeur_y = sharedPref.getInt("valeur_y", 0);
+            canvas.drawRect(x, valeur_y, x+100, 200, paint);
         }
     }
 
     public void update() {
         x = (x + 1) % 300;
-    }
-    public static int getPreferences(Context ctx,String name){
-
-        SharedPreferences a = ctx.getSharedPreferences("valeur_y",0);
-        int res = a.getInt("valeur_y",0);
-        int new_valeur_y = (res + 100) % 400;
+        valeur_y = (valeur_y + 100) % 400;
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("valeur_y", new_valeur_y);
+        editor.putInt("valeur_y", valeur_y);
         editor.apply();
-
-        return res;
     }
 }

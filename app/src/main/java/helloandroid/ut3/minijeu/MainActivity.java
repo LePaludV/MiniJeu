@@ -12,11 +12,13 @@ import android.view.WindowManager;
 public class MainActivity extends Activity {
     // AppCompactActivity : permet l'utilisation de fonctionnalité récente même avec les anciennes version d'android
 
+    SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedPref =
-                this.getPreferences(Context.MODE_PRIVATE);
+
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         int valeur_y = sharedPref.getInt("valeur_y", 0);
         valeur_y = (valeur_y + 100) % 400;
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -28,6 +30,6 @@ public class MainActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //setContentView(R.layout.activity_main);
-        setContentView(new GameView(this));
+        setContentView(new GameView(this, sharedPref));
     }
 }
