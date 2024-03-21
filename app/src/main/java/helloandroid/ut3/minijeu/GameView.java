@@ -60,7 +60,7 @@ public class GameView extends SurfaceView implements
             paint.setColor(Color.rgb(250, 0, 0));
 
             valeur_y = sharedPref.getInt("valeur_y", 0);
-            canvas.drawRect(x, valeur_y, x+100, 200, paint);
+            canvas.drawRect(x, valeur_y, x+100, valeur_y+100, paint);
         }
     }
 
