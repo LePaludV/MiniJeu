@@ -1,19 +1,23 @@
 package helloandroid.ut3.minijeu;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
 public class GameView extends SurfaceView implements
         SurfaceHolder.Callback {
     private final GameThread thread;
-    private SharedPreferences sharedPref;
+    private final SharedPreferences sharedPref;
     private int valeur_y;
     private int x=0;
 
@@ -64,11 +68,33 @@ public class GameView extends SurfaceView implements
         }
     }
 
-    public void update() {
-        x = (x + 1) % 300;
-        valeur_y = (valeur_y + 100) % 400;
+    public void update()  {
+        x = (x + 1);
+        checkState();
+        valeur_y = (valeur_y + 10);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("valeur_y", valeur_y);
         editor.apply();
+        Log.d("TAG", "update: "+valeur_y);
+        if(!checkState()){
+        }
+
     }
+
+        View parentView = findViewById(R.id.activity_main);
+        public boolean checkState(){
+            float w = parentView.getWidth();
+            float h = parentView.getHeight();
+            Log.d("TAG", "checkState:" +x+" "+ valeur_y);
+            Log.d("TAG", "checkState:" +w + " "+ h);
+            if(x<0 || x> w  || valeur_y<0 || valeur_y>h){
+                return false;
+            }
+            return true;
+
+        }
+
+
+
+
 }

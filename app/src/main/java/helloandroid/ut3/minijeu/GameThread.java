@@ -6,8 +6,8 @@ import android.graphics.Paint;
 import android.view.SurfaceHolder;
 
 public class GameThread extends Thread{
-    private SurfaceHolder surfaceHolder;
-    private GameView gameView;
+    private final SurfaceHolder surfaceHolder;
+    public GameView gameView;
 
     private boolean runner;
     public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
@@ -25,7 +25,6 @@ public class GameThread extends Thread{
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized(surfaceHolder) {
                     this.gameView.draw(canvas);
-
                     this.gameView.update();
                     sleep(600);
                 }
