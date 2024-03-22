@@ -31,16 +31,15 @@ import java.util.Random;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = true;
     private final GameThread thread;
-
     private int score = 0;
     MediaPlayer mediaPlayer;
     int MAX_FLY = 5;
 
     private final ArrayList<FlyType> flyTypes = new ArrayList(Arrays.asList(
-            new FlyType(R.drawable.fly,3,1,120, R.raw.fly_hit),
-            new FlyType(R.drawable.fly2,5,3,135, R.raw.fly_hit),
-            new FlyType(R.drawable.fly, 15, 5, 110, R.raw.fly_hit),
-            new FlyType(R.drawable.guepe, 10, -10, 110, R.raw.bee_hit)
+            new FlyType(R.drawable.fly,3,1,125, R.raw.fly_hit),
+            new FlyType(R.drawable.fly2,5,3,125, R.raw.fly_hit),
+            new FlyType(R.drawable.fly, 15, 5, 120, R.raw.fly_hit),
+            new FlyType(R.drawable.guepe, 10, -10, 120, R.raw.bee_hit)
     ));
     private final Map<Integer,Bitmap> TypeImg =new HashMap<Integer,Bitmap>() {
         {
