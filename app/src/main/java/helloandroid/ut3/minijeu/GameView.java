@@ -23,6 +23,8 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
@@ -38,6 +40,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             new FlyType(R.drawable.fly, 10, 5, 50),
             new FlyType(R.drawable.guepe, 20, -10, 100)
     ));
+    private final Map<Integer,Bitmap> TypeImg =new HashMap<Integer,Bitmap>() {
+        {
+            put(R.drawable.fly,BitmapFactory.decodeResource(getResources(), R.drawable.fly));
+            put(R.drawable.fly2,BitmapFactory.decodeResource(getResources(), R.drawable.fly2));
+            put(R.drawable.guepe,BitmapFactory.decodeResource(getResources(), R.drawable.guepe));
+        }
+    };
+
     private int screenWidth;
     private int screenHeight;
     ArrayList<Fly> Flys;
@@ -129,9 +139,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 int flyRadius = myFly.getRadius();
                 Matrix matrix = new Matrix();
                 matrix.postRotate(myFly.getAngleInDegrees());
-                Resources resources = getContext().getResources();
-                Bitmap flyImg= (BitmapFactory.decodeResource(getResources(), myFly.getImage()));
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, flyRadius, flyRadius, true);
+
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(TypeImg.get(myFly.getImage()), flyRadius, flyRadius, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
                // Log.d("TAG", "draw: " + myFly);
                 canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
