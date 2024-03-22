@@ -2,6 +2,7 @@ package helloandroid.ut3.minijeu;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class Fly {
 
@@ -14,13 +15,13 @@ public class Fly {
         return positionY;
     }
 
-    public float getRadius() {
+    public int getRadius() {
         return radius;
     }
     private int positionX;
 
     private int positionY;
-    private float radius;
+    private int radius;
 
     private Context context;
 
@@ -32,7 +33,7 @@ public class Fly {
 
     private Vector2D direction;
 
-    public Fly(float radius, Context context) {
+    public Fly(int radius, Context context) {
         this.context=context;
         getRandPosition();
         this.radius = radius;
@@ -64,7 +65,7 @@ public void updatePosition() {
     int screenWidth = sharedPref.getInt("screenWidth", 0);
     int screenHeight = sharedPref.getInt("screenHeight", 0);
 
-    if (this.positionX > screenWidth - this.radius || this.positionX < this.radius) {
+    if (this.positionX+radius > screenWidth - this.radius || this.positionX < this.radius) {
         this.direction.x *= -1;
     }
 
@@ -83,5 +84,12 @@ public void updatePosition() {
         return new Vector2D(x, y);
     }
 
+    public float getAngleInDegrees() {
+
+        double angleInRadians = Math.atan2(this.direction.y, this.direction.x);
+        double angleInDegrees = Math.toDegrees(angleInRadians) % 360;
+        Log.d("TEST", ""+angleInDegrees);
+        return (float)angleInDegrees;
+    }
 
 }
