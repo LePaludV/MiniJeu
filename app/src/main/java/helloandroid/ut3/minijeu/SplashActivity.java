@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
         findViewById(R.id.imageSplash).startAnimation(fadeIn);
         findViewById(R.id.nameSplash).startAnimation(fadeIn);
 
-        int duration = 2000;
+        int duration = 4000;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

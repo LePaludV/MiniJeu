@@ -1,5 +1,7 @@
 package helloandroid.ut3.minijeu;
 
+import static java.lang.Thread.sleep;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -42,7 +44,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         gameTimerTask = new TimerTask() {
             @Override
             public void run() {
-                if (remainingTimeGame > 0) {
+                if (remainingTimeGame > 0.25) {
                     // Update the timer TextView
                     TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
                     timerTextView.setText(String.valueOf((int) (remainingTimeGame + 0.99)));
@@ -57,7 +59,11 @@ public class GameActivity extends Activity implements SensorEventListener {
                     remainingTimeGame -= 0.2;
                 } else {
                     // Stop the game and go to the score activity
-                    stopGameAndGoToScoreActivity();
+                    try {
+                        stopGameAndGoToScoreActivity();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         };
@@ -143,9 +149,11 @@ public class GameActivity extends Activity implements SensorEventListener {
     }
     private void stopFlies() { gameView.stopFlies(); }
 
-    private void stopGameAndGoToScoreActivity() {
+    private void stopGameAndGoToScoreActivity() throws InterruptedException {
         // Stop the game and save the score if necessary
         gameTimer.cancel();
+        gameView.stopThread();
+        sleep(100);
 
         // Start the score activity
         Intent intent = new Intent(this, ScoreActivity.class);

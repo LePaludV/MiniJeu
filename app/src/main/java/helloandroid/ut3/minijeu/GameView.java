@@ -51,9 +51,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     };
 
-    private int screenWidth;
-    private int screenHeight;
-
     ArrayList<Fly> Flys;
     TextView viewScore;
 
@@ -71,6 +68,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         setOnTouchListener(touchListener);
+    }
+
+    public void stopThread() {
+        thread.setRunning(false);
     }
 
     @Override
@@ -206,7 +207,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void spawnMaya() {
         mediaPlayer = MediaPlayer.create(this.getContext(), R.raw.oh_my_god);
         mediaPlayer.start();
-        Flys.add(new Fly(new FlyType(R.drawable.maya,10,-100,400,R.raw.bee_hit), getContext()));
+        Flys.add(new Fly(new FlyType(R.drawable.maya,10,-50,300,R.raw.bee_hit), getContext()));
     }
 
     public int getScore() {
