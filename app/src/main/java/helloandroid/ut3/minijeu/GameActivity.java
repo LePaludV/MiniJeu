@@ -65,7 +65,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                         if (remainingTimeGame > 0) {
                             // Update the timer TextView
                             TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
-                            timerTextView.setText(String.valueOf((int)remainingTimeGame+1));
+                            timerTextView.setText(String.valueOf((int)(remainingTimeGame+0.99)));
                             gameView.checkStatus();
                             Log.d("TAG", ""+remainingTimeGame);
                             if(remainingTimeGame < 10.1 && remainingTimeGame >9.9){
@@ -83,7 +83,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         };
 
         // Schedule the timer to execute the TimerTask after 60 seconds
-        gameTimer.schedule(gameTimerTask, 0,200);
+        gameTimer.schedule(gameTimerTask, 0,500);
 
         setContentView(R.layout.activity_game);
 

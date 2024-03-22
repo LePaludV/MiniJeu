@@ -159,7 +159,7 @@ public class Fly {
     }
 
     public void speedUp() {
-        ballSpeed += 2.5;
+        ballSpeed *= 1.25;
     }
 
 
