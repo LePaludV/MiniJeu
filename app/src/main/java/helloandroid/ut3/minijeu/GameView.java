@@ -35,16 +35,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SharedPreferences sharedPref;
 
     private final ArrayList<FlyType> flyTypes = new ArrayList(Arrays.asList(
-            new FlyType(R.drawable.fly,3,1,150),
-            new FlyType(R.drawable.fly2,5,3,200),
+            new FlyType(R.drawable.fly,3,1,75),
+            new FlyType(R.drawable.fly2,5,3,100),
             new FlyType(R.drawable.fly, 10, 5, 50),
-            new FlyType(R.drawable.guepe, 20, -10, 100)
+            new FlyType(R.drawable.guepe, 20, -10, 75)
     ));
     private final Map<Integer,Bitmap> TypeImg =new HashMap<Integer,Bitmap>() {
         {
             put(R.drawable.fly,BitmapFactory.decodeResource(getResources(), R.drawable.fly));
             put(R.drawable.fly2,BitmapFactory.decodeResource(getResources(), R.drawable.fly2));
             put(R.drawable.guepe,BitmapFactory.decodeResource(getResources(), R.drawable.guepe));
+            put(R.drawable.maya,BitmapFactory.decodeResource(getResources(), R.drawable.maya));
         }
     };
 
@@ -93,7 +94,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         if (myFly.isPointInsideSquare(x,y)) {
                             // do something when the fly is touched
                             Log.d("TAG", "onTouch: ");
-                            Toast.makeText(getContext(), "Mouche touchée !", Toast.LENGTH_SHORT).show();
                             Flys.remove(i);
                             score += myFly.getScore();
                             break;
@@ -206,6 +206,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Random rand = new Random();
         int index = rand.nextInt(flyTypes.size());
         return flyTypes.get(index);
+    }
+
+    public void spawnMaya() {
+        Flys.add(new Fly(new FlyType(R.drawable.maya,10,-100,400), getContext()));
     }
 
 }
