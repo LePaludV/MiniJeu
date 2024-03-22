@@ -31,7 +31,6 @@ import java.util.Random;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = true;
     private final GameThread thread;
-
     private int score = 0;
     MediaPlayer mediaPlayer;
     int MAX_FLY = 5;
@@ -132,13 +131,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             paint.setColor(Color.rgb(250, 0, 0));
             for (int i = 0; i <Flys.size() ; i++) {
                 Fly myFly = Flys.get(i);
-                int flyRadius = myFly.getRadius();
+                int flyRadius = (int) (myFly.getRadius());
                 Matrix matrix = new Matrix();
                 matrix.postRotate(myFly.getAngleInDegrees());
 
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(TypeImg.get(myFly.getImage()), flyRadius, flyRadius, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-                Log.d("TAG", "draw: " + myFly.getTimer()/5);
+                //Log.d("TAG", "draw: " + myFly.getTimer()/5);
                 paint.setAlpha((int)(255*myFly.getTimer()/5));
                 canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
             }
@@ -205,6 +204,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void spawnMaya() {
+        mediaPlayer = MediaPlayer.create(this.getContext(), R.raw.oh_my_god);
+        mediaPlayer.start();
         Flys.add(new Fly(new FlyType(R.drawable.maya,10,-100,400,R.raw.bee_hit), getContext()));
     }
 

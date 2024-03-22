@@ -1,5 +1,9 @@
 package helloandroid.ut3.minijeu;
 
+import android.util.Log;
+
+import java.util.Random;
+
 public class FlyType {
 
     int imageName;
