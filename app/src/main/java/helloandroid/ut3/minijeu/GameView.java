@@ -153,6 +153,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
     public void stopFlies() {
         areFliesActive = false;
+        for (Fly fly : Flys) {
+            fly.resetSpeed();
+        }
     }
+
+    public void speedUpFlies() {
+        for(Fly fly : Flys){
+            fly.speedUp();
+        }
+    }
+
 
 }
