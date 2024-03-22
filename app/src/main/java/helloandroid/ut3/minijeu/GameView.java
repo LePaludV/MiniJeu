@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -29,16 +30,17 @@ import java.util.Random;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = true;
-
     private final GameThread thread;
+
     private int score = 0;
-    private SharedPreferences sharedPref;
+    MediaPlayer mediaPlayer;
+    int MAX_FLY = 5;
 
     private final ArrayList<FlyType> flyTypes = new ArrayList(Arrays.asList(
-            new FlyType(R.drawable.fly,3,1,75),
-            new FlyType(R.drawable.fly2,5,3,100),
-            new FlyType(R.drawable.fly, 10, 5, 50),
-            new FlyType(R.drawable.guepe, 20, -10, 75)
+            new FlyType(R.drawable.fly,3,1,75, R.raw.fly_hit),
+            new FlyType(R.drawable.fly2,5,3,100, R.raw.fly_hit),
+            new FlyType(R.drawable.fly, 10, 5, 50, R.raw.fly_hit),
+            new FlyType(R.drawable.guepe, 20, -10, 75, R.raw.bee_hit)
     ));
     private final Map<Integer,Bitmap> TypeImg =new HashMap<Integer,Bitmap>() {
         {
@@ -51,24 +53,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private int screenWidth;
     private int screenHeight;
+
     ArrayList<Fly> Flys;
     TextView viewScore;
-    private int MAX_FLY =10;
-    public GameView(Context context, SharedPreferences sharedPref, TextView viewScore) {
-        super(context);
 
-        this.sharedPref = sharedPref;
+    public GameView(Context context, TextView viewScore) {
+        super(context);
         this.viewScore = viewScore;
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
 
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        this.screenWidth = displayMetrics.widthPixels;
-        this.screenHeight = displayMetrics.heightPixels;
-
         Flys= new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < MAX_FLY; i++) {
             FlyType myFlyType = getRandomFlyType();
             Flys.add(new Fly(myFlyType,getContext()));
         }
@@ -78,30 +75,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d("TAG1", "onTouch: ");
-                performClick();
 
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d("TAG", "onTouch: ");
+        setOnTouchListener((v, event) -> {
+            performClick();
 
-                    int x = (int) event.getX();
-                    int y = (int) event.getY();
-                    for (int i = 0; i < Flys.size(); i++) {
-                        Fly myFly = Flys.get(i);
-                        if (myFly.isPointInsideSquare(x,y)) {
-                            // do something when the fly is touched
-                            Log.d("TAG", "onTouch: ");
-                            Flys.remove(i);
-                            score += myFly.getScore();
-                            break;
-                        }
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                int x = (int) event.getX();
+                int y = (int) event.getY();
+                for (int i = 0; i < Flys.size(); i++) {
+                    Fly myFly = Flys.get(i);
+                    if (myFly.isPointInsideSquare(x,y)) {
+                        // do something when the fly is touched
+                        Flys.remove(i);
+                        score += myFly.getScore();
+                        // TODO : son
+                        mediaPlayer = MediaPlayer.create(this.getContext(), myFly.getSound());
+                        mediaPlayer.start();
+                        break;
                     }
                 }
-                return true;
             }
+            return true;
         });
 
         thread.setRunning(true);
@@ -142,8 +137,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(TypeImg.get(myFly.getImage()), flyRadius, flyRadius, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-               // Log.d("TAG", "draw: " + myFly);
-                paint.setAlpha(255*myFly.getTimer()/5);
+                Log.d("TAG", "draw: " + myFly.getTimer()/5);
+                paint.setAlpha((int)(255*myFly.getTimer()/5));
                 canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
             }
         }
@@ -177,9 +172,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 FlyType flyTypes = getRandomFlyType();
                 Flys.add(new Fly(flyTypes,getContext()));
         }
-
         viewScore.setText(String.valueOf(score));
     }
+
     public void stopFlies() {
         areFliesActive = false;
         for (Fly f :Flys) {
@@ -192,6 +187,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             fly.speedUp();
         }
     }
+
     public void checkStatus(){
         for (int i = 0; i < Flys.size() ; i++) {
             Fly f = Flys.get(i);
@@ -199,7 +195,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 Flys.remove(i);
             }
         }
-
     }
 
     public FlyType getRandomFlyType() {
@@ -209,7 +204,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void spawnMaya() {
-        Flys.add(new Fly(new FlyType(R.drawable.maya,10,-100,400), getContext()));
+        Flys.add(new Fly(new FlyType(R.drawable.maya,10,-100,400,R.raw.bee_hit), getContext()));
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void addFlies() {
+        int size= Flys.size();
+        for (int i = 0; i < MAX_FLY -size ; i++) {
+            FlyType flyTypes = getRandomFlyType();
+            Flys.add(new Fly(flyTypes,getContext()));
+        }
+    }
 }

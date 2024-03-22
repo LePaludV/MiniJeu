@@ -28,7 +28,8 @@ public class GameThread extends Thread {
                     this.gameView.draw(canvas);
                     this.gameView.update();
                     this.gameView.updateScore();
-                    sleep(33);
+                    this.gameView.addFlies();
+                    sleep(16);
                 }
             } catch (Exception e) {
             } finally {

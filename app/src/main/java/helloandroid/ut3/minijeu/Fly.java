@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class Fly {
 
+    private int soundId;
 
     private final int image;
 
@@ -44,7 +45,7 @@ public class Fly {
 
     private int score;
 
-    private int timer;
+    private double timer;
 
     public Fly(FlyType type, Context context) {
         this.context = context;
@@ -56,6 +57,7 @@ public class Fly {
         this.direction = getRandomDirection();
         this.timer = 5;
         this.image = type.imageName;
+        this.soundId = type.soundId;
     }
 
     public int getImage() {
@@ -160,13 +162,17 @@ public class Fly {
     }
 
 
-    public int updateLocalTimer() {
-        this.timer -= 1;
-        Log.d("TAG", "updateLocalTimer: "+this.timer);
+    public double updateLocalTimer() {
+        this.timer -= 0.2;
+        //Log.d("TAG", "updateLocalTimer: "+this.timer);
         return timer;
     }
 
-    public int getTimer() {
+    public double getTimer() {
         return this.timer;
+    }
+
+    public int getSound() {
+        return this.soundId;
     }
 }
