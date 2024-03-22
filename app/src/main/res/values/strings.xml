@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">MiniJeu</string>
+    <string name="app_name">CatchTheFly</string>
+    <string name="button_start_game">Start Game</string>
+    <string name="button_game_rules">Rules</string>
+    <string name="button_game_credits">Credits</string>
+    <string name="button_exit_game">Exit</string>
 </resources>
