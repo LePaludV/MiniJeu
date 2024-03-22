@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class Fly {
 
@@ -49,7 +50,7 @@ public class Fly {
 
     public Fly(FlyType type, Context context) {
         this.context = context;
-        this.defautSpeed = type.speed | 3;
+        this.defautSpeed = type.speed * (1+((new Random()).nextInt(151)/100)) | 3;
         this.ballSpeed = defautSpeed;
         getRandPosition();
         this.radius = type.radius | 100;
