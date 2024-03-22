@@ -31,6 +31,7 @@ import java.util.Random;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = true;
     private final GameThread thread;
+
     private int score = 0;
     MediaPlayer mediaPlayer;
     int MAX_FLY = 5;
@@ -48,6 +49,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             put(R.drawable.guepe,BitmapFactory.decodeResource(getResources(), R.drawable.guepe));
         }
     };
+
+    private int screenWidth;
+    private int screenHeight;
+
     ArrayList<Fly> Flys;
     TextView viewScore;
 
@@ -163,6 +168,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void updateScore() {
+        int size= Flys.size();
+            for (int i = 0; i <MAX_FLY-size ; i++) {
+
+                FlyType flyTypes = getRandomFlyType();
+                Flys.add(new Fly(flyTypes,getContext()));
+        }
         viewScore.setText(String.valueOf(score));
     }
 
@@ -192,6 +203,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Random rand = new Random();
         int index = rand.nextInt(flyTypes.size());
         return flyTypes.get(index);
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public void addFlies() {
