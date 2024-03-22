@@ -18,17 +18,13 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class GameView extends SurfaceView implements
-        SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+    private boolean areFliesActive = false;
+
     private final GameThread thread;
     private SharedPreferences sharedPref;
-    private int ballY=0;
-    private int ballX=0;
-    private float ballSpeed=1;
-    private int ballDirectionX=1;
-    private int ballDirectionY=1;
-    private final int ballRadius=50;
 
     private int screenWidth;
     private int screenHeight;
@@ -44,8 +40,11 @@ public class GameView extends SurfaceView implements
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         this.screenWidth = displayMetrics.widthPixels;
         this.screenHeight = displayMetrics.heightPixels;
-        this.ballX=(int)screenWidth/2 - ballRadius/2;
-        this.ballY=(int)screenHeight/2 - ballRadius/2;
+
+        Flys= new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Flys.add(new Fly(100,getContext()));
+        }
 
         setOnTouchListener(touchListener);
     }
@@ -54,10 +53,6 @@ public class GameView extends SurfaceView implements
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         thread.setRunning(true);
         thread.start();
-        Flys= new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Flys.add(new Fly(100,getContext()));
-        }
     }
 
     @Override
@@ -90,11 +85,11 @@ public class GameView extends SurfaceView implements
             for (int i = 0; i <Flys.size() ; i++) {
                 Fly myFly = Flys.get(i);
                 Matrix matrix = new Matrix();
-                matrix.postRotate(i*10);
+                matrix.postRotate(i * 10);
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, 200, 200, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-                Log.d("TAG", "draw: "+myFly);
-                canvas.drawBitmap(rotatedBitmap,myFly.getPositionX(), myFly.getPositionY(), paint);
+                Log.d("TAG", "draw: " + myFly);
+                canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
             }
         }
     }
@@ -110,9 +105,15 @@ public class GameView extends SurfaceView implements
     };
 
     public void update() {
-        for (int i = 0; i <Flys.size() ; i++) {
-            Fly myFly = Flys.get(i);
-            myFly.updatePosition();
+        if (areFliesActive) {
+            for (int i = 0; i < Flys.size(); i++) {
+                Fly myFly = Flys.get(i);
+                myFly.updatePosition();
+            }
         }
+    }
+
+    public void wakeUpFlies() {
+        areFliesActive = true;
     }
 }

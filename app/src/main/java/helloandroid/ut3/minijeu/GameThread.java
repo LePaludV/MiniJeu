@@ -5,11 +5,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.SurfaceHolder;
 
-public class GameThread extends Thread{
+public class GameThread extends Thread {
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
-
     private boolean runner;
+
     public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
         super();
         this.surfaceHolder = surfaceHolder;
@@ -18,18 +18,18 @@ public class GameThread extends Thread{
 
     @Override
     public void run() {
-        boolean running = true;
-        while (running) {
+        runner = true; // Initialisez la variable runner à true ici
+
+        while (runner) {
             Canvas canvas = null;
             try {
                 canvas = this.surfaceHolder.lockCanvas();
-                synchronized(surfaceHolder) {
+                synchronized (surfaceHolder) {
                     this.gameView.draw(canvas);
-
                     this.gameView.update();
                 }
-            } catch (Exception e) {}
-            finally {
+            } catch (Exception e) {
+            } finally {
                 if (canvas != null) {
                     try {
                         surfaceHolder.unlockCanvasAndPost(canvas);
@@ -40,8 +40,8 @@ public class GameThread extends Thread{
             }
         }
     }
-    public void setRunning(boolean b) {
+
+    public void setRunning(boolean runner) {
         this.runner = runner;
     }
-
 }
