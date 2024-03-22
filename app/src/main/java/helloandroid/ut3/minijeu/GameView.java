@@ -36,25 +36,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public GameView(Context context, SharedPreferences sharedPref, TextView viewScore) {
         super(context);
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    int x = (int) event.getX();
-                    int y = (int) event.getY();
-                    for (int i = 0; i < Flys.size(); i++) {
-                        Fly myFly = Flys.get(i);
-                        if (myFly.isPointInsideSquare(x,y)) {
-                            // do something when the fly is touched
-                            Toast.makeText(context, "Mouche touchée !", Toast.LENGTH_SHORT).show();
-                            Flys.remove(i);
-                        }
-                    }
-                }
-                return true;
-            }
-        });
-
 
         this.sharedPref = sharedPref;
         this.viewScore = viewScore;
@@ -76,6 +57,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d("TAG1", "onTouch: ");
+                performClick();
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Log.d("TAG", "onTouch: ");
+
+                    int x = (int) event.getX();
+                    int y = (int) event.getY();
+                    for (int i = 0; i < Flys.size(); i++) {
+                        Fly myFly = Flys.get(i);
+                        if (myFly.isPointInsideSquare(x,y)) {
+                            // do something when the fly is touched
+                            Log.d("TAG", "onTouch: ");
+                            Toast.makeText(getContext(), "Mouche touchée !", Toast.LENGTH_SHORT).show();
+                            Flys.remove(i);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+
         thread.setRunning(true);
         thread.start();
     }
@@ -114,7 +120,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 matrix.postRotate(myFly.getAngleInDegrees()+90);
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, flyRadius, 200, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-                Log.d("TAG", "draw: " + myFly);
+               // Log.d("TAG", "draw: " + myFly);
                 canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
             }
         }
