@@ -29,8 +29,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     private float acceleration = 0.0f;
     private float currentAcceleration = 0.0f;
     private float lastAcceleration = 0.0f;
-    private Random random;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +54,13 @@ public class GameActivity extends Activity implements SensorEventListener {
         editor.putInt("screenHeight",displayMetrics.heightPixels);
         editor.apply();
 
-        gameView = new GameView(this, sharedPref);
+        gameView = new GameView(this, sharedPref, findViewById(R.id.text_view_score_placeholder));
         setContentView(gameView);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-
-        random = new Random();
     }
 
     @Override
