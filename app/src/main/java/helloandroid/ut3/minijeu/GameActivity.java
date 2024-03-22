@@ -42,8 +42,13 @@ public class GameActivity extends Activity implements SensorEventListener {
         ConstraintLayout constraintLayout = findViewById(R.id.layout_game_view);
         constraintLayout.addView(gameView);
 
+        activateSensors();
+    }
+
+    private void activateSensors() {
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
@@ -53,14 +58,6 @@ public class GameActivity extends Activity implements SensorEventListener {
         editor.putInt("screenWidth",  displayMetrics.widthPixels);
         editor.putInt("screenHeight",displayMetrics.heightPixels);
         editor.apply();
-
-        gameView = new GameView(this, sharedPref, findViewById(R.id.text_view_score_placeholder));
-        setContentView(gameView);
-
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
