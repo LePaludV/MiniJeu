@@ -83,7 +83,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         };
 
         // Schedule the timer to execute the TimerTask after 60 seconds
-        gameTimer.schedule(gameTimerTask, 0,500);
+        gameTimer.schedule(gameTimerTask, 0,200);
 
         setContentView(R.layout.activity_game);
 
