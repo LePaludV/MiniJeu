@@ -13,7 +13,7 @@ public class MenuActivity extends Activity {
     }
 
     public void startMainActivity(View view) {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, GameActivity.class));
     }
 
     public void startRulesActivity(View view) {
