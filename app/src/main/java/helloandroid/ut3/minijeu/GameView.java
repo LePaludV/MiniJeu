@@ -39,13 +39,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private final ArrayList<FlyType> flyTypes = new ArrayList(Arrays.asList(
             new FlyType(R.drawable.fly,3,1,75, R.raw.fly_hit),
             new FlyType(R.drawable.fly2,5,3,100, R.raw.fly_hit),
-            new FlyType(R.drawable.fly, 10, 5, 50, R.raw.fly_hit),
+            new FlyType(R.drawable.fly3, 10, 5, 50, R.raw.fly_hit),
             new FlyType(R.drawable.guepe, 20, -10, 75, R.raw.bee_hit)
     ));
     private final Map<Integer,Bitmap> TypeImg =new HashMap<Integer,Bitmap>() {
         {
             put(R.drawable.fly,BitmapFactory.decodeResource(getResources(), R.drawable.fly));
             put(R.drawable.fly2,BitmapFactory.decodeResource(getResources(), R.drawable.fly2));
+            put(R.drawable.fly3,BitmapFactory.decodeResource(getResources(), R.drawable.fly3));
             put(R.drawable.guepe,BitmapFactory.decodeResource(getResources(), R.drawable.guepe));
             put(R.drawable.maya,BitmapFactory.decodeResource(getResources(), R.drawable.maya));
         }
