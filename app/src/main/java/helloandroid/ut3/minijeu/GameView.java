@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -24,15 +25,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = false;
 
     private final GameThread thread;
+    private int score = 0;
     private SharedPreferences sharedPref;
 
     private int screenWidth;
     private int screenHeight;
     ArrayList<Fly> Flys;
+    TextView viewScore;
 
-    public GameView(Context context, SharedPreferences sharedPref) {
+    public GameView(Context context, SharedPreferences sharedPref, TextView viewScore) {
         super(context);
         this.sharedPref = sharedPref;
+        this.viewScore = viewScore;
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
@@ -95,13 +99,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     View.OnTouchListener touchListener = (v, event) -> {
-        // Handle touch events here
         float x = event.getX();
         float y = event.getY();
 
         performClick();
-        // Perform actions based on touch coordinates
-        return true; // Return true to consume the event
+        return true;
     };
 
     public void update() {
@@ -115,5 +117,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void wakeUpFlies() {
         areFliesActive = true;
+    }
+
+    public void updateScore() {
+        score++;
+        viewScore.setText(String.valueOf(score));
     }
 }
