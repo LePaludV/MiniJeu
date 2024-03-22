@@ -26,17 +26,14 @@ public class GameActivity extends Activity implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor lightSensor;
-    private Timer timerFly;
-    private TimerTask timerTaskFly;
     private Timer gameTimer;
     private TimerTask gameTimerTask;
     private double remainingTimeGame = 20;
 
+    boolean isStoped = false ;
     private float acceleration = 0.0f;
     private float currentAcceleration = 0.0f;
     private float lastAcceleration = 0.0f;
-
-    private boolean globalState = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,26 +41,11 @@ public class GameActivity extends Activity implements SensorEventListener {
         SharedPreferences sharedPref = this.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
         setPreferenceWidthAndHeight(sharedPref);
 
-
-        timerFly = new Timer();
-        timerTaskFly = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        gameView.speedUpFlies();
-                    }
-                });
-            }
-        };
-        timerFly.schedule(timerTaskFly, 0, 500);
-
         gameTimer = new Timer();
         gameTimerTask = new TimerTask() {
             @Override
             public void run() {
-                if (remainingTimeGame > 0.25) {
+                if (remainingTimeGame > 0.25 && !isStoped) {
                     // Update the timer TextView
                     TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
                     timerTextView.setText(String.valueOf((int) (remainingTimeGame + 0.99)));
@@ -86,14 +68,9 @@ public class GameActivity extends Activity implements SensorEventListener {
                 }
             }
         };
-
-        // Schedule the timer to execute the TimerTask after 60 seconds
-        gameTimer.schedule(gameTimerTask, 0,200);
-
         setContentView(R.layout.activity_game);
 
         gameView = new GameView(this, findViewById(R.id.text_view_score_placeholder));
-        gameView.setState(this.globalState);
         ConstraintLayout constraintLayout = findViewById(R.id.layout_game_view);
         constraintLayout.addView(gameView);
 
@@ -133,9 +110,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 
             if (acceleration > 12) {
                 wakeUpFlies();
-                this.globalState=true;
-                gameView.setState(this.globalState);
-
             }
         }
 
@@ -143,15 +117,13 @@ public class GameActivity extends Activity implements SensorEventListener {
             float lightValue = event.values[0];
             if (lightValue < 10) {
                 stopFlies();
-                this.globalState=false;
-                gameView.setState(this.globalState);
-
             }
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Pas utilisé dans cet exemple
     }
 
     @Override
@@ -174,9 +146,10 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 
     private void wakeUpFlies() {
+        isStoped=false;
         gameView.wakeUpFlies();
     }
-    private void stopFlies() { gameView.stopFlies(); }
+    private void stopFlies() { isStoped= true;gameView.stopFlies(); }
 
     private void stopGameAndGoToScoreActivity() throws InterruptedException {
         // Stop the game and save the score if necessary
@@ -184,12 +157,10 @@ public class GameActivity extends Activity implements SensorEventListener {
         gameView.stopThread();
         sleep(100);
 
+        // Start the score activity
         Intent intent = new Intent(this, ScoreActivity.class);
         intent.putExtra("Score", gameView.getScore());
         startActivity(intent);
-
-        // Finish the current activity
-        finish();
     }
 
 
