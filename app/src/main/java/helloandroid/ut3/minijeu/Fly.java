@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Fly {
 
 
@@ -18,6 +22,7 @@ public class Fly {
     public int getRadius() {
         return radius;
     }
+
     private int positionX;
 
     private int positionY;
@@ -27,39 +32,59 @@ public class Fly {
 
     private int ballSpeed;
 
-    private int ballDirectionX=1;
+    private int ballDirectionX = 1;
 
-    private int ballDirectionY=1;
+    private int ballDirectionY = 1;
 
     private Vector2D direction;
 
-    public Fly(int radius, Context context) {
-        this.context=context;
+    private int defautSpeed;
+
+    private int score;
+
+    private int timer;
+
+    public Fly(FlyType type, Context context) {
+        this.context = context;
+        this.defautSpeed = type.speed | 3;
+        this.ballSpeed = defautSpeed;
         getRandPosition();
-        this.radius = radius;
-        this.ballSpeed=3;
+        this.radius = type.radius | 100;
+        this.score = type.score;
         this.direction = getRandomDirection();
+        this.timer = 15;
     }
 
-public void getRandPosition(){
-    SharedPreferences sharedPref = this.context.getSharedPreferences("sharedFile",Context.MODE_PRIVATE);
-    int screenWidth = sharedPref.getInt("screenWidth",0);
-    int screenHeight = sharedPref.getInt("screenHeight",0);
-    this.positionX  =  (int) (Math.random() * (screenWidth - 0));
-    this.positionY = (int) (Math.random() * (screenHeight - 0));
-}
-public boolean isOutsideScreen(){
-    SharedPreferences sharedPref = this.context.getSharedPreferences("sharedFile",Context.MODE_PRIVATE);
-    int screenWidth = sharedPref.getInt("screenWidth",0);
-    int screenHeight = sharedPref.getInt("screenHeight",0);
-        if(this.positionX<0 || this.positionY<0){
+    public void resetSpeed() {
+        this.ballSpeed = this.defautSpeed;
+    }
+
+    public int getScore() {
+        //TODO LE CALCUL
+        return this.score;
+    }
+
+    public void getRandPosition() {
+        SharedPreferences sharedPref = this.context.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
+        int screenWidth = sharedPref.getInt("screenWidth", 0);
+        int screenHeight = sharedPref.getInt("screenHeight", 0);
+        this.positionX = (int) (Math.random() * (screenWidth - 0));
+        this.positionY = (int) (Math.random() * (screenHeight - 0));
+    }
+
+    public boolean isOutsideScreen() {
+        SharedPreferences sharedPref = this.context.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
+        int screenWidth = sharedPref.getInt("screenWidth", 0);
+        int screenHeight = sharedPref.getInt("screenHeight", 0);
+        if (this.positionX < 0 || this.positionY < 0) {
             return true;
         }
-        if(this.positionX>screenWidth || this.positionY>screenHeight){
+        if (this.positionX > screenWidth || this.positionY > screenHeight) {
             return true;
         }
         return false;
-}
+    }
+
     public void updatePosition() {
         SharedPreferences sharedPref = this.context.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
         int screenWidth = sharedPref.getInt("screenWidth", 0);
@@ -70,8 +95,8 @@ public boolean isOutsideScreen(){
         float dy = this.direction.y;
 
         // Mise à jour de la position du carré
-        left += dx*ballSpeed;
-        top += dy*ballSpeed;
+        left += dx * ballSpeed;
+        top += dy * ballSpeed;
         int squareSize = this.getRadius();
 
         // Vérification des limites de l'écran et rebond du carré si nécessaire
@@ -107,7 +132,7 @@ public boolean isOutsideScreen(){
 
         double angleInRadians = Math.atan2(this.direction.y, this.direction.x);
         double angleInDegrees = Math.toDegrees(angleInRadians) % 360;
-        return (float)angleInDegrees;
+        return (float) angleInDegrees;
     }
 
     public boolean isPointInsideSquare(int x, int y) {
@@ -122,11 +147,14 @@ public boolean isOutsideScreen(){
             return false;
         }
     }
+
     public void speedUp() {
         ballSpeed *= 1.5;
     }
 
-    public void resetSpeed() {
-        ballSpeed = 3;
+
+    public int updateLocalTimer() {
+        this.timer -= 1;
+        return timer;
     }
 }

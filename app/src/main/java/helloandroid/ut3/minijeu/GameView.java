@@ -33,7 +33,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int screenHeight;
     ArrayList<Fly> Flys;
     TextView viewScore;
-
+    private int MAX_FLY =10;
     public GameView(Context context, SharedPreferences sharedPref, TextView viewScore) {
         super(context);
 
@@ -48,9 +48,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         this.screenHeight = displayMetrics.heightPixels;
 
         Flys= new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Flys.add(new Fly(200,getContext()));
-        }
+
 
         setOnTouchListener(touchListener);
     }
@@ -118,7 +116,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 int flyRadius = myFly.getRadius();
                 Matrix matrix = new Matrix();
                 matrix.postRotate(myFly.getAngleInDegrees()+90);
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, flyRadius, 200, true);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, flyRadius, flyRadius, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
                // Log.d("TAG", "draw: " + myFly);
                 canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
@@ -139,6 +137,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             for (int i = 0; i < Flys.size(); i++) {
                 Fly myFly = Flys.get(i);
                 myFly.updatePosition();
+                if(myFly.updateLocalTimer()==0){
+                    Flys.remove(i);
+                }
             }
         }
     }
@@ -148,13 +149,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void updateScore() {
+        int size= Flys.size();
+            for (int i = 0; i <MAX_FLY-size ; i++) {
+
+                Flys.add(new Fly(new FlyType("A",3,1,100),getContext()));
+        }
+
         score++;
         viewScore.setText(String.valueOf(score));
     }
     public void stopFlies() {
         areFliesActive = false;
-        for (Fly fly : Flys) {
-            fly.resetSpeed();
+        for (Fly f :Flys) {
+            f.resetSpeed();
         }
     }
 
