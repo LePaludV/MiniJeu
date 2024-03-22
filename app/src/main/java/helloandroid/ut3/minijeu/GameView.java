@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -14,8 +15,16 @@ public class GameView extends SurfaceView implements
         SurfaceHolder.Callback {
     private final GameThread thread;
     private SharedPreferences sharedPref;
-    private int valeur_y;
-    private int x=0;
+    private int ballY=0;
+    private int ballX=0;
+    private float ballSpeed=1;
+    private int ballDirectionX=1;
+    private int ballDirectionY=1;
+    private final int ballRadius=50;
+
+
+    private int screenWidth;
+    private int screenHeight;
 
     public GameView(Context context, SharedPreferences sharedPref) {
         super(context);
@@ -23,6 +32,12 @@ public class GameView extends SurfaceView implements
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
+
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        this.screenWidth = displayMetrics.widthPixels;
+        this.screenHeight = displayMetrics.heightPixels;
+        this.ballX=(int)screenWidth/2 - ballRadius/2;
+        this.ballY=(int)screenHeight/2 - ballRadius/2;
     }
 
     @Override
@@ -59,16 +74,22 @@ public class GameView extends SurfaceView implements
             Paint paint = new Paint();
             paint.setColor(Color.rgb(250, 0, 0));
 
-            valeur_y = sharedPref.getInt("valeur_y", 0);
-            canvas.drawRect(x, valeur_y, x+100, valeur_y+100, paint);
+            canvas.drawCircle(ballX, ballY, ballRadius, paint);
         }
     }
 
     public void update() {
-        x = (x + 1) % 300;
-        valeur_y = (valeur_y + 100) % 400;
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("valeur_y", valeur_y);
-        editor.apply();
+        ballX = (ballX + (int)ballSpeed*ballDirectionX);
+        ballY = (ballY + (int)ballSpeed*ballDirectionY);
+
+        if(ballX > screenWidth-ballRadius || ballX < ballRadius) {
+            ballDirectionX *= -1;
+        }
+
+        if(ballY > screenHeight-ballRadius || ballY < ballRadius) {
+            ballDirectionY *= -1;
+        }
+
+        ballSpeed += 0.1;
     }
 }
