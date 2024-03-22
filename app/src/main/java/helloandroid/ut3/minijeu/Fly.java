@@ -11,6 +11,8 @@ import java.util.Map;
 public class Fly {
 
 
+    private final int image;
+
     public int getPositionX() {
         return positionX;
     }
@@ -53,6 +55,11 @@ public class Fly {
         this.score = type.score;
         this.direction = getRandomDirection();
         this.timer = 5;
+        this.image = type.imageName;
+    }
+
+    public int getImage() {
+        return image;
     }
 
     public void resetSpeed() {
