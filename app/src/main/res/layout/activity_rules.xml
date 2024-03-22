@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Vous devez tuer un maximum de mouche en 20 secondes. Faites attention a ne pas vous faire piquer par les guepes et maya l'abeille !\nScore :"
+            android:text="Vous devez tuer un maximum de mouche en 20 secondes. Faites attention a ne pas vous faire piquer par les guepes et maya l'abeille !\n\nLes mouches vont de plus en plus vite. Cachez le capteur de luminosité pour arreter les mouches et secouez pour les faire repartir a leur vitesse par défaut\n\nScore :"
             android:textSize="16sp" />
 
         <LinearLayout
