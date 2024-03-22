@@ -60,23 +60,42 @@ public boolean isOutsideScreen(){
         }
         return false;
 }
-public void updatePosition() {
-    SharedPreferences sharedPref = this.context.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
-    int screenWidth = sharedPref.getInt("screenWidth", 0);
-    int screenHeight = sharedPref.getInt("screenHeight", 0);
+    public void updatePosition() {
+        SharedPreferences sharedPref = this.context.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
+        int screenWidth = sharedPref.getInt("screenWidth", 0);
+        int screenHeight = sharedPref.getInt("screenHeight", 0);
+        int top = this.getPositionY();
+        int left = this.getPositionX();
+        float dx = this.direction.x;
+        float dy = this.direction.y;
 
-    if (this.positionX+radius > screenWidth - this.radius || this.positionX < this.radius) {
-        this.direction.x *= -1;
+        // Mise à jour de la position du carré
+        left += dx*ballSpeed;
+        top += dy*ballSpeed;
+        int squareSize = this.getRadius();
+
+        // Vérification des limites de l'écran et rebond du carré si nécessaire
+        if (left < 0) {
+            left = 0;
+            this.direction.x = -dx;
+        } else if (left + squareSize > screenWidth) {
+            left = screenWidth - squareSize;
+            this.direction.x = -dx;
+        }
+
+        if (top < 0) {
+            top = 0;
+            this.direction.y = -dy;
+        } else if (top + squareSize > screenHeight) {
+            top = screenHeight - squareSize;
+            this.direction.y = -dy;
+        }
+
+        // Mise à jour du tableau de coordonnées du carré
+        this.positionY = top;
+        this.positionX = left;
     }
 
-    if (this.positionY > screenHeight - this.radius || this.positionY < this.radius) {
-        this.direction.y *= -1;
-    }
-    this.ballSpeed += 0.1;
-
-    this.positionX = (int) (this.positionX + ballSpeed * direction.x);
-    this.positionY = (int) (this.positionY + ballSpeed * direction.y);
-}
     private Vector2D getRandomDirection() {
         double angle = Math.random() * 2 * Math.PI;
         float x = (float) Math.cos(angle);
@@ -88,8 +107,19 @@ public void updatePosition() {
 
         double angleInRadians = Math.atan2(this.direction.y, this.direction.x);
         double angleInDegrees = Math.toDegrees(angleInRadians) % 360;
-        Log.d("TEST", ""+angleInDegrees);
         return (float)angleInDegrees;
     }
 
+    public boolean isPointInsideSquare(int x, int y) {
+        int left = this.positionX;
+        int top = this.positionY;
+        int bottom = top + this.radius;
+        int right = left + this.radius;
+
+        if (x >= left && x <= right && y >= top && y <= bottom) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
