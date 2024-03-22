@@ -16,12 +16,10 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.List;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = false;
-
-    private Random random;
 
     private final GameThread thread;
     private SharedPreferences sharedPref;
@@ -83,17 +81,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             for (int i = 0; i <Flys.size() ; i++) {
                 Fly myFly = Flys.get(i);
                 Matrix matrix = new Matrix();
-                matrix.postRotate(i*10);
+                matrix.postRotate(i * 10);
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, 200, 200, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-                Log.d("TAG", "draw: "+myFly);
-                canvas.drawBitmap(rotatedBitmap,myFly.getPositionX(), myFly.getPositionY(),paint);
-
+                Log.d("TAG", "draw: " + myFly);
+                canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
             }
         }
     }
-
-
 
     public void update() {
         if (areFliesActive) {
@@ -107,5 +102,4 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void wakeUpFlies() {
         areFliesActive = true;
     }
-
 }
