@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -30,7 +31,12 @@ public class GameActivity extends Activity implements SensorEventListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPref = getSharedPreferences("my_preferences", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = this.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        editor.putInt("screenWidth",  displayMetrics.widthPixels);
+        editor.putInt("screenHeight",displayMetrics.heightPixels);
+        editor.apply();
 
         gameView = new GameView(this, sharedPref);
         setContentView(gameView);
