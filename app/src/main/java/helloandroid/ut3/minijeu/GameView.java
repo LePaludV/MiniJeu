@@ -10,8 +10,10 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -27,7 +29,6 @@ public class GameView extends SurfaceView implements
     private int ballDirectionX=1;
     private int ballDirectionY=1;
     private final int ballRadius=50;
-
 
     private int screenWidth;
     private int screenHeight;
@@ -45,6 +46,8 @@ public class GameView extends SurfaceView implements
         this.screenHeight = displayMetrics.heightPixels;
         this.ballX=(int)screenWidth/2 - ballRadius/2;
         this.ballY=(int)screenHeight/2 - ballRadius/2;
+
+        setOnTouchListener(touchListener);
     }
 
     @Override
@@ -91,12 +94,20 @@ public class GameView extends SurfaceView implements
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, 200, 200, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
                 Log.d("TAG", "draw: "+myFly);
-                canvas.drawBitmap(rotatedBitmap,myFly.getPositionX(), myFly.getPositionY(),paint);
-
+                canvas.drawBitmap(rotatedBitmap,myFly.getPositionX(), myFly.getPositionY(), paint);
             }
-
         }
     }
+
+    View.OnTouchListener touchListener = (v, event) -> {
+        // Handle touch events here
+        float x = event.getX();
+        float y = event.getY();
+
+        performClick();
+        // Perform actions based on touch coordinates
+        return true; // Return true to consume the event
+    };
 
     public void update() {
         for (int i = 0; i <Flys.size() ; i++) {
