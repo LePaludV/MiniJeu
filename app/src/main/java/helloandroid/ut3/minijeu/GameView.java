@@ -134,6 +134,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, flyRadius, flyRadius, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
                // Log.d("TAG", "draw: " + myFly);
+                paint.setAlpha(255*myFly.getTimer()/5);
                 canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
             }
         }
@@ -185,7 +186,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void checkStatus(){
         for (int i = 0; i < Flys.size() ; i++) {
             Fly f = Flys.get(i);
-            if(f.updateLocalTimer()==0){
+            if(f.updateLocalTimer()<=0){
                 Flys.remove(i);
             }
         }
