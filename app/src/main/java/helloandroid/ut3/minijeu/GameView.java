@@ -8,19 +8,22 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-    private boolean areFliesActive = false;
+    private boolean areFliesActive = true;
 
     private final GameThread thread;
     private int score = 0;
@@ -33,6 +36,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public GameView(Context context, SharedPreferences sharedPref, TextView viewScore) {
         super(context);
+
         this.sharedPref = sharedPref;
         this.viewScore = viewScore;
         getHolder().addCallback(this);
@@ -45,7 +49,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         Flys= new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Flys.add(new Fly(100,getContext()));
+            Flys.add(new Fly(200,getContext()));
         }
 
         setOnTouchListener(touchListener);
@@ -53,6 +57,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d("TAG1", "onTouch: ");
+                performClick();
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Log.d("TAG", "onTouch: ");
+
+                    int x = (int) event.getX();
+                    int y = (int) event.getY();
+                    for (int i = 0; i < Flys.size(); i++) {
+                        Fly myFly = Flys.get(i);
+                        if (myFly.isPointInsideSquare(x,y)) {
+                            // do something when the fly is touched
+                            Log.d("TAG", "onTouch: ");
+                            Toast.makeText(getContext(), "Mouche touchée !", Toast.LENGTH_SHORT).show();
+                            Flys.remove(i);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+
         thread.setRunning(true);
         thread.start();
     }
@@ -86,11 +115,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             paint.setColor(Color.rgb(250, 0, 0));
             for (int i = 0; i <Flys.size() ; i++) {
                 Fly myFly = Flys.get(i);
+                int flyRadius = myFly.getRadius();
                 Matrix matrix = new Matrix();
-                matrix.postRotate(i * 10);
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, 200, 200, true);
+                matrix.postRotate(myFly.getAngleInDegrees()+90);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, flyRadius, 200, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-                Log.d("TAG", "draw: " + myFly);
+               // Log.d("TAG", "draw: " + myFly);
                 canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
             }
         }
