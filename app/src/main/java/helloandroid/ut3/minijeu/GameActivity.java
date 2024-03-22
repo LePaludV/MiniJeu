@@ -1,6 +1,5 @@
 package helloandroid.ut3.minijeu;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,12 +20,17 @@ import java.util.List;
 import java.util.Random;
 
 public class GameActivity extends Activity implements SensorEventListener {
+
     private GameView gameView;
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private Sensor lightSensor;
+
     private float acceleration = 0.0f;
     private float currentAcceleration = 0.0f;
     private float lastAcceleration = 0.0f;
+    private Random random;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,22 +55,40 @@ public class GameActivity extends Activity implements SensorEventListener {
         editor.putInt("screenWidth",  displayMetrics.widthPixels);
         editor.putInt("screenHeight",displayMetrics.heightPixels);
         editor.apply();
+
+        gameView = new GameView(this, sharedPref);
+        setContentView(gameView);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+        random = new Random();
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float x = event.values[0];
-        float y = event.values[1];
-        float z = event.values[2];
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
 
-        lastAcceleration = currentAcceleration;
-        currentAcceleration = (float) Math.sqrt((x * x + y * y + z * z));
-        float deltaAcceleration = currentAcceleration - lastAcceleration;
-        acceleration = acceleration * 0.9f + deltaAcceleration;
+            lastAcceleration = currentAcceleration;
+            currentAcceleration = (float) Math.sqrt((double) (x * x + y * y + z * z));
+            float deltaAcceleration = currentAcceleration - lastAcceleration;
+            acceleration = acceleration * 0.9f + deltaAcceleration;
 
-        if (acceleration > 12) {
-            // Le téléphone a été secoué, réveillez les points noirs ici
-            wakeUpFlies();
+            if (acceleration > 12) {
+                wakeUpFlies();
+            }
+        }
+
+        else if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+            float lightValue = event.values[0];
+            if (lightValue < 10) {
+                stopFlies();
+            }
         }
     }
 
@@ -79,6 +101,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     protected void onResume() {
         super.onResume();
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -87,7 +110,10 @@ public class GameActivity extends Activity implements SensorEventListener {
         sensorManager.unregisterListener(this);
     }
 
+
     private void wakeUpFlies() {
         gameView.wakeUpFlies();
     }
+    private void stopFlies() { gameView.stopFlies(); }
+
 }

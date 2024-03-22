@@ -10,7 +10,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = false;
@@ -123,4 +121,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         score++;
         viewScore.setText(String.valueOf(score));
     }
+    public void stopFlies() {
+        areFliesActive = false;
+    }
+
 }
