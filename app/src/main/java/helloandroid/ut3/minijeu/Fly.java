@@ -52,7 +52,7 @@ public class Fly {
         this.radius = type.radius | 100;
         this.score = type.score;
         this.direction = getRandomDirection();
-        this.timer = 15;
+        this.timer = 5;
     }
 
     public void resetSpeed() {
@@ -149,12 +149,13 @@ public class Fly {
     }
 
     public void speedUp() {
-        ballSpeed *= 1.5;
+        ballSpeed += 2.5;
     }
 
 
     public int updateLocalTimer() {
         this.timer -= 1;
+        Log.d("TAG", "updateLocalTimer: "+this.timer);
         return timer;
     }
 }

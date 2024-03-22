@@ -29,8 +29,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     private TimerTask gameTimerTask;
     private int remainingTimeGame = 20;
 
-
-
     private float acceleration = 0.0f;
     private float currentAcceleration = 0.0f;
     private float lastAcceleration = 0.0f;
@@ -67,7 +65,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                             // Update the timer TextView
                             TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
                             timerTextView.setText(String.valueOf(remainingTimeGame));
-
+                            gameView.checkStatus();
                             remainingTimeGame--;
                         } else {
                             // Stop the game and go to the score activity

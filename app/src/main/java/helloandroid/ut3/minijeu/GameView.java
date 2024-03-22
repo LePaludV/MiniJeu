@@ -33,7 +33,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int screenHeight;
     ArrayList<Fly> Flys;
     TextView viewScore;
-    private int MAX_FLY =10;
+    private int MAX_FLY =50;
     public GameView(Context context, SharedPreferences sharedPref, TextView viewScore) {
         super(context);
 
@@ -62,7 +62,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 performClick();
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d("TAG", "onTouch: ");
 
                     int x = (int) event.getX();
                     int y = (int) event.getY();
@@ -70,7 +69,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         Fly myFly = Flys.get(i);
                         if (myFly.isPointInsideSquare(x,y)) {
                             // do something when the fly is touched
-                            Log.d("TAG", "onTouch: ");
                             Toast.makeText(getContext(), "Mouche touchée !", Toast.LENGTH_SHORT).show();
                             Flys.remove(i);
                         }
@@ -137,9 +135,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             for (int i = 0; i < Flys.size(); i++) {
                 Fly myFly = Flys.get(i);
                 myFly.updatePosition();
-                if(myFly.updateLocalTimer()==0){
-                    Flys.remove(i);
-                }
             }
         }
     }
@@ -170,6 +165,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             fly.speedUp();
         }
     }
+    public void checkStatus(){
+        for (int i = 0; i < Flys.size() ; i++) {
+            Fly f = Flys.get(i);
+            if(f.updateLocalTimer()==0){
+                Flys.remove(i);
+            }
+        }
 
+    }
 
 }
