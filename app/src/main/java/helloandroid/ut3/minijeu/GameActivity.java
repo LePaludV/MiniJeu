@@ -67,6 +67,10 @@ public class GameActivity extends Activity implements SensorEventListener {
                             TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
                             timerTextView.setText(String.valueOf((int)remainingTimeGame+1));
                             gameView.checkStatus();
+                            if(remainingTimeGame == 10 ){
+                                gameView.spawnMaya();
+                            }
+
                             remainingTimeGame -= 0.2;
                         } else {
                             // Stop the game and go to the score activity

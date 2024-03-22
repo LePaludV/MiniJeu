@@ -37,16 +37,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     int MAX_FLY = 5;
 
     private final ArrayList<FlyType> flyTypes = new ArrayList(Arrays.asList(
-            new FlyType(R.drawable.fly,3,1,150, R.raw.fly_hit),
-            new FlyType(R.drawable.fly2,5,3,200, R.raw.fly_hit),
+            new FlyType(R.drawable.fly,3,1,75, R.raw.fly_hit),
+            new FlyType(R.drawable.fly2,5,3,100, R.raw.fly_hit),
             new FlyType(R.drawable.fly, 10, 5, 50, R.raw.fly_hit),
-            new FlyType(R.drawable.guepe, 20, -10, 100, R.raw.bee_hit)
+            new FlyType(R.drawable.guepe, 20, -10, 75, R.raw.bee_hit)
     ));
     private final Map<Integer,Bitmap> TypeImg =new HashMap<Integer,Bitmap>() {
         {
             put(R.drawable.fly,BitmapFactory.decodeResource(getResources(), R.drawable.fly));
             put(R.drawable.fly2,BitmapFactory.decodeResource(getResources(), R.drawable.fly2));
             put(R.drawable.guepe,BitmapFactory.decodeResource(getResources(), R.drawable.guepe));
+            put(R.drawable.maya,BitmapFactory.decodeResource(getResources(), R.drawable.maya));
         }
     };
 
@@ -74,12 +75,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
+
         setOnTouchListener((v, event) -> {
-            //Log.d("TAG1", "onTouch: ");
             performClick();
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                //Log.d("TAG", "onTouch: ");
 
                 int x = (int) event.getX();
                 int y = (int) event.getY();
@@ -87,8 +87,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     Fly myFly = Flys.get(i);
                     if (myFly.isPointInsideSquare(x,y)) {
                         // do something when the fly is touched
-                        Log.d("TAG", "onTouch: ");
-                        Toast.makeText(getContext(), "Mouche touchée !", Toast.LENGTH_SHORT).show();
                         Flys.remove(i);
                         score += myFly.getScore();
                         // TODO : son
@@ -203,6 +201,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Random rand = new Random();
         int index = rand.nextInt(flyTypes.size());
         return flyTypes.get(index);
+    }
+
+    public void spawnMaya() {
+        Flys.add(new Fly(new FlyType(R.drawable.maya,10,-100,400,R.raw.bee_hit), getContext()));
     }
 
     public int getScore() {
