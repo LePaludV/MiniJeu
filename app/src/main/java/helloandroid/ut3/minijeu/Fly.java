@@ -11,6 +11,8 @@ import java.util.Map;
 public class Fly {
 
 
+    private final int image;
+
     public int getPositionX() {
         return positionX;
     }
@@ -53,6 +55,11 @@ public class Fly {
         this.score = type.score;
         this.direction = getRandomDirection();
         this.timer = 5;
+        this.image = type.imageName;
+    }
+
+    public int getImage() {
+        return image;
     }
 
     public void resetSpeed() {
@@ -132,7 +139,7 @@ public class Fly {
 
         double angleInRadians = Math.atan2(this.direction.y, this.direction.x);
         double angleInDegrees = Math.toDegrees(angleInRadians) % 360;
-        return (float) angleInDegrees;
+        return (float)angleInDegrees+90;
     }
 
     public boolean isPointInsideSquare(int x, int y) {
