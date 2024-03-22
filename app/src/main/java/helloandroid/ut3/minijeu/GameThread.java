@@ -8,8 +8,8 @@ import android.view.SurfaceHolder;
 public class GameThread extends Thread{
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
-
     private boolean runner;
+
     public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
         super();
         this.surfaceHolder = surfaceHolder;
@@ -18,8 +18,7 @@ public class GameThread extends Thread{
 
     @Override
     public void run() {
-        boolean running = true;
-        while (running) {
+        while (runner) {
             Canvas canvas = null;
             try {
                 canvas = this.surfaceHolder.lockCanvas();
@@ -40,8 +39,9 @@ public class GameThread extends Thread{
             }
         }
     }
-    public void setRunning(boolean b) {
+    public void setRunning(boolean runner) {
         this.runner = runner;
     }
+
 
 }

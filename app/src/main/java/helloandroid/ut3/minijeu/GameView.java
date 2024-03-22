@@ -16,18 +16,15 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-public class GameView extends SurfaceView implements
-        SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+    private boolean areFliesActive = false;
+
+    private Random random;
+
     private final GameThread thread;
     private SharedPreferences sharedPref;
-    private int ballY=0;
-    private int ballX=0;
-    private float ballSpeed=1;
-    private int ballDirectionX=1;
-    private int ballDirectionY=1;
-    private final int ballRadius=50;
-
 
     private int screenWidth;
     private int screenHeight;
@@ -43,18 +40,17 @@ public class GameView extends SurfaceView implements
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         this.screenWidth = displayMetrics.widthPixels;
         this.screenHeight = displayMetrics.heightPixels;
-        this.ballX=(int)screenWidth/2 - ballRadius/2;
-        this.ballY=(int)screenHeight/2 - ballRadius/2;
+
+        Flys= new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Flys.add(new Fly(100,getContext()));
+        }
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         thread.setRunning(true);
         thread.start();
-        Flys= new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Flys.add(new Fly(100,getContext()));
-        }
     }
 
     @Override
@@ -94,14 +90,22 @@ public class GameView extends SurfaceView implements
                 canvas.drawBitmap(rotatedBitmap,myFly.getPositionX(), myFly.getPositionY(),paint);
 
             }
-
         }
     }
+
+
 
     public void update() {
-        for (int i = 0; i <Flys.size() ; i++) {
-            Fly myFly = Flys.get(i);
-            myFly.updatePosition();
+        if (areFliesActive) {
+            for (int i = 0; i < Flys.size(); i++) {
+                Fly myFly = Flys.get(i);
+                myFly.updatePosition();
+            }
         }
     }
+
+    public void wakeUpFlies() {
+        areFliesActive = true;
+    }
+
 }
