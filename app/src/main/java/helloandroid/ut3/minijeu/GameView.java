@@ -53,6 +53,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     ArrayList<Fly> Flys;
     TextView viewScore;
+    private boolean state;
 
     public GameView(Context context, TextView viewScore) {
         super(context);
@@ -126,7 +127,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (canvas != null) {
+        if (canvas != null && this.state) {
             canvas.drawColor(Color.WHITE);
             Paint paint = new Paint();
             paint.setColor(Color.rgb(250, 0, 0));
@@ -148,13 +149,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     View.OnTouchListener touchListener = (v, event) -> {
         float x = event.getX();
         float y = event.getY();
-
         performClick();
         return true;
     };
 
     public void update() {
-        if (areFliesActive) {
+        if (areFliesActive && this.state) {
             for (int i = 0; i < Flys.size(); i++) {
                 Fly myFly = Flys.get(i);
                 myFly.updatePosition();
@@ -167,14 +167,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void updateScore() {
-        int size= Flys.size();
-            for (int i = 0; i <MAX_FLY-size ; i++) {
+        if(this.state) {
+            int size = Flys.size();
+            for (int i = 0; i < MAX_FLY - size; i++) {
 
                 FlyType flyTypes = getRandomFlyType();
-                Flys.add(new Fly(flyTypes,getContext()));
+                Flys.add(new Fly(flyTypes, getContext()));
+            }
+            viewScore.setText(String.valueOf(score));
         }
-        viewScore.setText(String.valueOf(score));
-    }
+        }
 
     public void stopFlies() {
         areFliesActive = false;
@@ -217,8 +219,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void addFlies() {
         int size= Flys.size();
         for (int i = 0; i < MAX_FLY -size ; i++) {
-            FlyType flyTypes = getRandomFlyType();
-            Flys.add(new Fly(flyTypes,getContext()));
+            FlyType flyType = getRandomFlyType();
+            Flys.add(new Fly(flyType,getContext()));
         }
+    }
+
+    public void setState(boolean globalState) {
+        this.state=globalState;
     }
 }

@@ -26,6 +26,8 @@ public class GameActivity extends Activity implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor lightSensor;
+    private Timer timerFly;
+    private TimerTask timerTaskFly;
     private Timer gameTimer;
     private TimerTask gameTimerTask;
     private double remainingTimeGame = 20;
@@ -34,11 +36,28 @@ public class GameActivity extends Activity implements SensorEventListener {
     private float currentAcceleration = 0.0f;
     private float lastAcceleration = 0.0f;
 
+    private boolean globalState = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = this.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
         setPreferenceWidthAndHeight(sharedPref);
+
+
+        timerFly = new Timer();
+        timerTaskFly = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        gameView.speedUpFlies();
+                    }
+                });
+            }
+        };
+        timerFly.schedule(timerTaskFly, 0, 500);
 
         gameTimer = new Timer();
         gameTimerTask = new TimerTask() {
@@ -67,6 +86,10 @@ public class GameActivity extends Activity implements SensorEventListener {
                 }
             }
         };
+
+        // Schedule the timer to execute the TimerTask after 60 seconds
+        gameTimer.schedule(gameTimerTask, 0,200);
+
         setContentView(R.layout.activity_game);
 
         gameView = new GameView(this, findViewById(R.id.text_view_score_placeholder));
@@ -109,6 +132,9 @@ public class GameActivity extends Activity implements SensorEventListener {
 
             if (acceleration > 12) {
                 wakeUpFlies();
+                this.globalState=true;
+                gameView.setState(this.globalState);
+
             }
         }
 
@@ -116,6 +142,9 @@ public class GameActivity extends Activity implements SensorEventListener {
             float lightValue = event.values[0];
             if (lightValue < 10) {
                 stopFlies();
+                this.globalState=false;
+                gameView.setState(this.globalState);
+
             }
         }
     }
@@ -159,6 +188,9 @@ public class GameActivity extends Activity implements SensorEventListener {
         Intent intent = new Intent(this, ScoreActivity.class);
         intent.putExtra("Score", gameView.getScore());
         startActivity(intent);
+
+        // Finish the current activity
+        finish();
     }
 
 
