@@ -2,14 +2,20 @@ package helloandroid.ut3.minijeu;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
 
 public class GameView extends SurfaceView implements
         SurfaceHolder.Callback {
@@ -25,6 +31,7 @@ public class GameView extends SurfaceView implements
 
     private int screenWidth;
     private int screenHeight;
+    ArrayList<Fly> Flys;
 
     public GameView(Context context, SharedPreferences sharedPref) {
         super(context);
@@ -44,7 +51,10 @@ public class GameView extends SurfaceView implements
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         thread.setRunning(true);
         thread.start();
-
+        Flys= new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Flys.add(new Fly(100,getContext()));
+        }
     }
 
     @Override
@@ -72,24 +82,26 @@ public class GameView extends SurfaceView implements
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
             Paint paint = new Paint();
+            Bitmap flyImg= (BitmapFactory.decodeResource(getResources(), R.drawable.fly));
             paint.setColor(Color.rgb(250, 0, 0));
+            for (int i = 0; i <Flys.size() ; i++) {
+                Fly myFly = Flys.get(i);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(i*10);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, 200, 200, true);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                Log.d("TAG", "draw: "+myFly);
+                canvas.drawBitmap(rotatedBitmap,myFly.getPositionX(), myFly.getPositionY(),paint);
 
-            canvas.drawCircle(ballX, ballY, ballRadius, paint);
+            }
+
         }
     }
 
     public void update() {
-        ballX = (ballX + (int)ballSpeed*ballDirectionX);
-        ballY = (ballY + (int)ballSpeed*ballDirectionY);
-
-        if(ballX > screenWidth-ballRadius || ballX < ballRadius) {
-            ballDirectionX *= -1;
+        for (int i = 0; i <Flys.size() ; i++) {
+            Fly myFly = Flys.get(i);
+            myFly.updatePosition();
         }
-
-        if(ballY > screenHeight-ballRadius || ballY < ballRadius) {
-            ballDirectionY *= -1;
-        }
-
-        ballSpeed += 0.1;
     }
 }
