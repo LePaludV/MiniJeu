@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class Fly {
 
+    private int soundId;
 
     private final int image;
 
@@ -56,6 +57,7 @@ public class Fly {
         this.direction = getRandomDirection();
         this.timer = 5;
         this.image = type.imageName;
+        this.soundId = type.soundId;
     }
 
     public int getImage() {
@@ -168,5 +170,9 @@ public class Fly {
 
     public int getTimer() {
         return this.timer;
+    }
+
+    public int getSound() {
+        return this.soundId;
     }
 }
