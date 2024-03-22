@@ -102,4 +102,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void wakeUpFlies() {
         areFliesActive = true;
     }
+    public void stopFlies() {
+        areFliesActive = false;
+    }
+
 }
