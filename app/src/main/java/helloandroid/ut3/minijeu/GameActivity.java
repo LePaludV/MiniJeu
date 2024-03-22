@@ -2,6 +2,7 @@ package helloandroid.ut3.minijeu;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,15 +10,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameActivity extends Activity implements SensorEventListener {
 
@@ -25,6 +23,13 @@ public class GameActivity extends Activity implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor lightSensor;
+    private Timer timerFly;
+    private TimerTask timerTaskFly;
+    private Timer gameTimer;
+    private TimerTask gameTimerTask;
+    private int remainingTimeGame = 20;
+
+
 
     private float acceleration = 0.0f;
     private float currentAcceleration = 0.0f;
@@ -35,6 +40,46 @@ public class GameActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = this.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
         setPreferenceWidthAndHeight(sharedPref);
+
+
+        timerFly = new Timer();
+        timerTaskFly = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        gameView.speedUpFlies();
+                    }
+                });
+            }
+        };
+        timerFly.schedule(timerTaskFly, 0, 500);
+
+        gameTimer = new Timer();
+        gameTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (remainingTimeGame > 0) {
+                            // Update the timer TextView
+                            TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
+                            timerTextView.setText(String.valueOf(remainingTimeGame));
+
+                            remainingTimeGame--;
+                        } else {
+                            // Stop the game and go to the score activity
+                            stopGameAndGoToScoreActivity();
+                        }
+                    }
+                });
+            }
+        };
+
+        // Schedule the timer to execute the TimerTask after 60 seconds
+        gameTimer.schedule(gameTimerTask, 0,1000);
 
         setContentView(R.layout.activity_game);
 
@@ -101,6 +146,11 @@ public class GameActivity extends Activity implements SensorEventListener {
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+
+        if (gameTimer != null) {
+            gameTimer.cancel();
+            gameTimer = null;
+        }
     }
 
 
@@ -108,5 +158,18 @@ public class GameActivity extends Activity implements SensorEventListener {
         gameView.wakeUpFlies();
     }
     private void stopFlies() { gameView.stopFlies(); }
+
+    private void stopGameAndGoToScoreActivity() {
+        // Stop the game and save the score if necessary
+        // ...
+
+        // Start the score activity
+        Intent intent = new Intent(this, ScoreActivity.class);
+        startActivity(intent);
+
+        // Finish the current activity
+        finish();
+    }
+
 
 }

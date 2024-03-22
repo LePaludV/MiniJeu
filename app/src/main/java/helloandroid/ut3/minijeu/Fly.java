@@ -122,4 +122,11 @@ public boolean isOutsideScreen(){
             return false;
         }
     }
+    public void speedUp() {
+        ballSpeed *= 1.5;
+    }
+
+    public void resetSpeed() {
+        ballSpeed = 3;
+    }
 }
