@@ -153,7 +153,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         // Stop the game and save the score if necessary
         gameTimer.cancel();
         gameView.stopThread();
-        sleep(100);
+        sleep(200);
 
         // Start the score activity
         Intent intent = new Intent(this, ScoreActivity.class);
