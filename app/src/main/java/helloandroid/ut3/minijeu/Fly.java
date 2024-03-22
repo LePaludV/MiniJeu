@@ -132,7 +132,7 @@ public class Fly {
 
         double angleInRadians = Math.atan2(this.direction.y, this.direction.x);
         double angleInDegrees = Math.toDegrees(angleInRadians) % 360;
-        return (float) angleInDegrees;
+        return (float)angleInDegrees+90;
     }
 
     public boolean isPointInsideSquare(int x, int y) {

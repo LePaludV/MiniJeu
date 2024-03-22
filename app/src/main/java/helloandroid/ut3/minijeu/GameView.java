@@ -21,6 +21,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = true;
@@ -29,6 +31,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int score = 0;
     private SharedPreferences sharedPref;
 
+    private final ArrayList<FlyType> flyTypes = new ArrayList(Arrays.asList(
+            new FlyType("fly",3,1,150),
+            new FlyType("fly2",5,3,200),
+            new FlyType("fly", 10, 5, 50),
+            new FlyType("guepe", 20, -10, 100)
+    ));
     private int screenWidth;
     private int screenHeight;
     ArrayList<Fly> Flys;
@@ -48,7 +56,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         this.screenHeight = displayMetrics.heightPixels;
 
         Flys= new ArrayList<>();
-
+        for (int i = 0; i < 10; i++) {
+            FlyType myFlyType = getRandomFlyType();
+            Flys.add(new Fly(myFlyType.radius,getContext()));
+        }
 
         setOnTouchListener(touchListener);
     }
@@ -62,6 +73,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 performClick();
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Log.d("TAG", "onTouch: ");
 
                     int x = (int) event.getX();
                     int y = (int) event.getY();
@@ -69,8 +81,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         Fly myFly = Flys.get(i);
                         if (myFly.isPointInsideSquare(x,y)) {
                             // do something when the fly is touched
+                            Log.d("TAG", "onTouch: ");
                             Toast.makeText(getContext(), "Mouche touchée !", Toast.LENGTH_SHORT).show();
                             Flys.remove(i);
+                            score += 1;
+                            break;
                         }
                     }
                 }
@@ -113,7 +128,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 Fly myFly = Flys.get(i);
                 int flyRadius = myFly.getRadius();
                 Matrix matrix = new Matrix();
-                matrix.postRotate(myFly.getAngleInDegrees()+90);
+                matrix.postRotate(myFly.getAngleInDegrees());
+                Bitmap flyImg= (BitmapFactory.decodeResource(getResources(), R.drawable.guepe));
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(flyImg, flyRadius, flyRadius, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
                // Log.d("TAG", "draw: " + myFly);
@@ -173,6 +189,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
+    }
+
+    public FlyType getRandomFlyType() {
+        Random rand = new Random();
+        int index = rand.nextInt(flyTypes.size());
+        return flyTypes.get(index);
     }
 
 }
