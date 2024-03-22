@@ -24,8 +24,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor lightSensor;
-    private Timer timerFly;
-    private TimerTask timerTaskFly;
     private Timer gameTimer;
     private TimerTask gameTimerTask;
     private double remainingTimeGame = 20;
@@ -40,51 +38,29 @@ public class GameActivity extends Activity implements SensorEventListener {
         SharedPreferences sharedPref = this.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
         setPreferenceWidthAndHeight(sharedPref);
 
-
-        timerFly = new Timer();
-        timerTaskFly = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        gameView.speedUpFlies();
-                    }
-                });
-            }
-        };
-        timerFly.schedule(timerTaskFly, 0, 500);
-
         gameTimer = new Timer();
         gameTimerTask = new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (remainingTimeGame > 0) {
-                            // Update the timer TextView
-                            TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
-                            timerTextView.setText(String.valueOf((int)(remainingTimeGame+0.99)));
-                            gameView.checkStatus();
-                            Log.d("TAG", ""+remainingTimeGame);
-                            if(remainingTimeGame < 10.1 && remainingTimeGame >9.9){
-                                gameView.spawnMaya();
-                            }
+                if (remainingTimeGame > 0) {
+                    // Update the timer TextView
+                    TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
+                    timerTextView.setText(String.valueOf((int) (remainingTimeGame + 0.99)));
 
-                            remainingTimeGame -= 0.2;
-                        } else {
-                            // Stop the game and go to the score activity
-                            stopGameAndGoToScoreActivity();
-                        }
+                    gameView.checkStatus();
+                    Log.d("TAG", "" + remainingTimeGame);
+                    if (remainingTimeGame < 10.1 && remainingTimeGame > 9.9) {
+                        gameView.spawnMaya();
                     }
-                });
+                    gameView.speedUpFlies();
+
+                    remainingTimeGame -= 0.2;
+                } else {
+                    // Stop the game and go to the score activity
+                    stopGameAndGoToScoreActivity();
+                }
             }
         };
-
-        // Schedule the timer to execute the TimerTask after 60 seconds
-        gameTimer.schedule(gameTimerTask, 0,200);
-
         setContentView(R.layout.activity_game);
 
         gameView = new GameView(this, findViewById(R.id.text_view_score_placeholder));
@@ -92,6 +68,10 @@ public class GameActivity extends Activity implements SensorEventListener {
         constraintLayout.addView(gameView);
 
         activateSensors();
+
+        // Schedule the timer to execute the TimerTask after 60 seconds
+        gameTimer.schedule(gameTimerTask, 0,200);
+
     }
 
     private void activateSensors() {
@@ -165,7 +145,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
     private void stopGameAndGoToScoreActivity() {
         // Stop the game and save the score if necessary
-        // ...
+        gameTimer.cancel();
 
         // Start the score activity
         Intent intent = new Intent(this, ScoreActivity.class);
