@@ -151,9 +151,6 @@ public class GameActivity extends Activity implements SensorEventListener {
         Intent intent = new Intent(this, ScoreActivity.class);
         intent.putExtra("Score", gameView.getScore());
         startActivity(intent);
-
-        // Finish the current activity
-        finish();
     }
 
 
