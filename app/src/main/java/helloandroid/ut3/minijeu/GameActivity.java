@@ -30,6 +30,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     private TimerTask gameTimerTask;
     private double remainingTimeGame = 20;
 
+    boolean isStoped = false ;
     private float acceleration = 0.0f;
     private float currentAcceleration = 0.0f;
     private float lastAcceleration = 0.0f;
@@ -44,19 +45,21 @@ public class GameActivity extends Activity implements SensorEventListener {
         gameTimerTask = new TimerTask() {
             @Override
             public void run() {
-                if (remainingTimeGame > 0.25) {
-                    // Update the timer TextView
-                    TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
-                    timerTextView.setText(String.valueOf((int) (remainingTimeGame + 0.99)));
+                if (remainingTimeGame > 0.25 ) {
+                    if(!isStoped) {
+                        // Update the timer TextView
+                        TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
+                        timerTextView.setText(String.valueOf((int) (remainingTimeGame + 0.99)));
 
-                    gameView.checkStatus();
-                    Log.d("TAG", "" + remainingTimeGame);
-                    if (remainingTimeGame < 10.1 && remainingTimeGame > 9.9) {
-                        gameView.spawnMaya();
+                        gameView.checkStatus();
+                        Log.d("TAG", "" + remainingTimeGame);
+                        if (remainingTimeGame < 10.1 && remainingTimeGame > 9.9) {
+                            gameView.spawnMaya();
+                        }
+                        gameView.speedUpFlies();
+
+                        remainingTimeGame -= 0.2;
                     }
-                    gameView.speedUpFlies();
-
-                    remainingTimeGame -= 0.2;
                 } else {
                     // Stop the game and go to the score activity
                     try {
@@ -145,9 +148,10 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 
     private void wakeUpFlies() {
+        isStoped=false;
         gameView.wakeUpFlies();
     }
-    private void stopFlies() { gameView.stopFlies(); }
+    private void stopFlies() { isStoped= true;gameView.stopFlies(); }
 
     private void stopGameAndGoToScoreActivity() throws InterruptedException {
         // Stop the game and save the score if necessary
