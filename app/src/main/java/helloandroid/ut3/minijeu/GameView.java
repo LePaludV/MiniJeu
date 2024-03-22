@@ -31,6 +31,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = true;
 
     private final GameThread thread;
+
     private int score = 0;
     private SharedPreferences sharedPref;
 
@@ -177,7 +178,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 FlyType flyTypes = getRandomFlyType();
                 Flys.add(new Fly(flyTypes,getContext()));
         }
-
         viewScore.setText(String.valueOf(score));
     }
     public void stopFlies() {
@@ -206,6 +206,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Random rand = new Random();
         int index = rand.nextInt(flyTypes.size());
         return flyTypes.get(index);
+    }
+
+    public int getScore() {
+        return score;
     }
 
 }
