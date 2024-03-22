@@ -63,6 +63,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                 } else {
                     // Stop the game and go to the score activity
                     try {
+                        sleep(50);
                         stopGameAndGoToScoreActivity();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
@@ -155,14 +156,17 @@ public class GameActivity extends Activity implements SensorEventListener {
 
     private void stopGameAndGoToScoreActivity() throws InterruptedException {
         // Stop the game and save the score if necessary
-        gameTimer.cancel();
-        gameView.stopThread();
-        sleep(200);
+
 
         // Start the score activity
         Intent intent = new Intent(this, ScoreActivity.class);
         intent.putExtra("Score", gameView.getScore());
         startActivity(intent);
+
+        gameTimer.cancel();
+        gameView.stopThread();
+        sleep(200);
+
     }
 
 
