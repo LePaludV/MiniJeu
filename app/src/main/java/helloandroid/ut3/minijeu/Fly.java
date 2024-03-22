@@ -145,8 +145,8 @@ public class Fly {
     }
 
     public boolean isPointInsideSquare(int x, int y) {
-        int left = this.positionX;
-        int top = this.positionY;
+        int left = this.positionX+10;
+        int top = this.positionY+10;
         int bottom = top + this.radius;
         int right = left + this.radius;
 
