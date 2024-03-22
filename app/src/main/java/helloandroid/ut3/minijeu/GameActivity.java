@@ -45,19 +45,21 @@ public class GameActivity extends Activity implements SensorEventListener {
         gameTimerTask = new TimerTask() {
             @Override
             public void run() {
-                if (remainingTimeGame > 0.25 && !isStoped) {
-                    // Update the timer TextView
-                    TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
-                    timerTextView.setText(String.valueOf((int) (remainingTimeGame + 0.99)));
+                if (remainingTimeGame > 0.25 ) {
+                    if(!isStoped) {
+                        // Update the timer TextView
+                        TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
+                        timerTextView.setText(String.valueOf((int) (remainingTimeGame + 0.99)));
 
-                    gameView.checkStatus();
-                    Log.d("TAG", "" + remainingTimeGame);
-                    if (remainingTimeGame < 10.1 && remainingTimeGame > 9.9) {
-                        gameView.spawnMaya();
+                        gameView.checkStatus();
+                        Log.d("TAG", "" + remainingTimeGame);
+                        if (remainingTimeGame < 10.1 && remainingTimeGame > 9.9) {
+                            gameView.spawnMaya();
+                        }
+                        gameView.speedUpFlies();
+
+                        remainingTimeGame -= 0.2;
                     }
-                    gameView.speedUpFlies();
-
-                    remainingTimeGame -= 0.2;
                 } else {
                     // Stop the game and go to the score activity
                     try {
