@@ -165,4 +165,8 @@ public class Fly {
         Log.d("TAG", "updateLocalTimer: "+this.timer);
         return timer;
     }
+
+    public int getTimer() {
+        return this.timer;
+    }
 }
