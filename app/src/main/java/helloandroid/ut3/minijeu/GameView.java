@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -29,17 +30,17 @@ import java.util.Random;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = true;
-
     private final GameThread thread;
 
     private int score = 0;
-    private SharedPreferences sharedPref;
+    MediaPlayer mediaPlayer;
+    int MAX_FLY = 5;
 
     private final ArrayList<FlyType> flyTypes = new ArrayList(Arrays.asList(
-            new FlyType(R.drawable.fly,3,1,150),
-            new FlyType(R.drawable.fly2,5,3,200),
-            new FlyType(R.drawable.fly, 10, 5, 50),
-            new FlyType(R.drawable.guepe, 20, -10, 100)
+            new FlyType(R.drawable.fly,3,1,150, R.raw.fly_hit),
+            new FlyType(R.drawable.fly2,5,3,200, R.raw.fly_hit),
+            new FlyType(R.drawable.fly, 10, 5, 50, R.raw.fly_hit),
+            new FlyType(R.drawable.guepe, 20, -10, 100, R.raw.bee_hit)
     ));
     private final Map<Integer,Bitmap> TypeImg =new HashMap<Integer,Bitmap>() {
         {
@@ -51,24 +52,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private int screenWidth;
     private int screenHeight;
+
     ArrayList<Fly> Flys;
     TextView viewScore;
-    private int MAX_FLY =10;
-    public GameView(Context context, SharedPreferences sharedPref, TextView viewScore) {
-        super(context);
 
-        this.sharedPref = sharedPref;
+    public GameView(Context context, TextView viewScore) {
+        super(context);
         this.viewScore = viewScore;
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
 
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        this.screenWidth = displayMetrics.widthPixels;
-        this.screenHeight = displayMetrics.heightPixels;
-
         Flys= new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < MAX_FLY; i++) {
             FlyType myFlyType = getRandomFlyType();
             Flys.add(new Fly(myFlyType,getContext()));
         }
@@ -78,31 +74,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d("TAG1", "onTouch: ");
-                performClick();
+        setOnTouchListener((v, event) -> {
+            Log.d("TAG1", "onTouch: ");
+            performClick();
 
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d("TAG", "onTouch: ");
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                Log.d("TAG", "onTouch: ");
 
-                    int x = (int) event.getX();
-                    int y = (int) event.getY();
-                    for (int i = 0; i < Flys.size(); i++) {
-                        Fly myFly = Flys.get(i);
-                        if (myFly.isPointInsideSquare(x,y)) {
-                            // do something when the fly is touched
-                            Log.d("TAG", "onTouch: ");
-                            Toast.makeText(getContext(), "Mouche touchée !", Toast.LENGTH_SHORT).show();
-                            Flys.remove(i);
-                            score += myFly.getScore();
-                            break;
-                        }
+                int x = (int) event.getX();
+                int y = (int) event.getY();
+                for (int i = 0; i < Flys.size(); i++) {
+                    Fly myFly = Flys.get(i);
+                    if (myFly.isPointInsideSquare(x,y)) {
+                        // do something when the fly is touched
+                        Log.d("TAG", "onTouch: ");
+                        Toast.makeText(getContext(), "Mouche touchée !", Toast.LENGTH_SHORT).show();
+                        Flys.remove(i);
+                        score += myFly.getScore();
+                        // TODO : son
+                        mediaPlayer = MediaPlayer.create(this.getContext(), myFly.getSound());
+                        mediaPlayer.start();
+                        break;
                     }
                 }
-                return true;
             }
+            return true;
         });
 
         thread.setRunning(true);
@@ -180,6 +176,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
         viewScore.setText(String.valueOf(score));
     }
+
     public void stopFlies() {
         areFliesActive = false;
         for (Fly f :Flys) {
@@ -192,6 +189,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             fly.speedUp();
         }
     }
+
     public void checkStatus(){
         for (int i = 0; i < Flys.size() ; i++) {
             Fly f = Flys.get(i);
@@ -199,7 +197,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 Flys.remove(i);
             }
         }
-
     }
 
     public FlyType getRandomFlyType() {
@@ -212,4 +209,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return score;
     }
 
+    public void addFlies() {
+        int size= Flys.size();
+        for (int i = 0; i < MAX_FLY -size ; i++) {
+            FlyType flyTypes = getRandomFlyType();
+            Flys.add(new Fly(flyTypes,getContext()));
+        }
+    }
 }

@@ -81,7 +81,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         setContentView(R.layout.activity_game);
 
-        gameView = new GameView(this, sharedPref, findViewById(R.id.text_view_score_placeholder));
+        gameView = new GameView(this, findViewById(R.id.text_view_score_placeholder));
         ConstraintLayout constraintLayout = findViewById(R.id.layout_game_view);
         constraintLayout.addView(gameView);
 
