@@ -15,45 +15,53 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:gravity="center"
         android:orientation="vertical"
-        android:gravity="center">
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">>
 
         <Button
             android:id="@+id/buttonStartGame"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
+            android:layout_weight="1"
             android:onClick="startMainActivity"
             android:text="@string/button_start_game"
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/buttonRules"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_weight="1"
             android:onClick="startRulesActivity"
             android:text="@string/button_game_rules"
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/buttonCredits"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_weight="1"
             android:onClick="startCreditsActivity"
             android:text="@string/button_game_credits"
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/buttonExit"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_weight="1"
             android:onClick="exitGame"
             android:text="@string/button_exit_game"
             android:textSize="20sp" />
     </LinearLayout>
 
 </RelativeLayout>
+
