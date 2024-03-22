@@ -45,7 +45,7 @@ public class Fly {
 
     private int score;
 
-    private int timer;
+    private double timer;
 
     public Fly(FlyType type, Context context) {
         this.context = context;
@@ -162,13 +162,13 @@ public class Fly {
     }
 
 
-    public int updateLocalTimer() {
-        this.timer -= 1;
-        Log.d("TAG", "updateLocalTimer: "+this.timer);
+    public double updateLocalTimer() {
+        this.timer -= 0.2;
+        //Log.d("TAG", "updateLocalTimer: "+this.timer);
         return timer;
     }
 
-    public int getTimer() {
+    public double getTimer() {
         return this.timer;
     }
 

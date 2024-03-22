@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -27,7 +28,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     private TimerTask timerTaskFly;
     private Timer gameTimer;
     private TimerTask gameTimerTask;
-    private int remainingTimeGame = 20;
+    private double remainingTimeGame = 20;
 
     private float acceleration = 0.0f;
     private float currentAcceleration = 0.0f;
@@ -64,9 +65,9 @@ public class GameActivity extends Activity implements SensorEventListener {
                         if (remainingTimeGame > 0) {
                             // Update the timer TextView
                             TextView timerTextView = findViewById(R.id.text_view_timer_placeholder);
-                            timerTextView.setText(String.valueOf(remainingTimeGame));
+                            timerTextView.setText(String.valueOf((int)remainingTimeGame+1));
                             gameView.checkStatus();
-                            remainingTimeGame--;
+                            remainingTimeGame -= 0.2;
                         } else {
                             // Stop the game and go to the score activity
                             stopGameAndGoToScoreActivity();
@@ -77,7 +78,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         };
 
         // Schedule the timer to execute the TimerTask after 60 seconds
-        gameTimer.schedule(gameTimerTask, 0,1000);
+        gameTimer.schedule(gameTimerTask, 0,200);
 
         setContentView(R.layout.activity_game);
 

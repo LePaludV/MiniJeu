@@ -70,11 +70,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         setOnTouchListener((v, event) -> {
-            Log.d("TAG1", "onTouch: ");
+            //Log.d("TAG1", "onTouch: ");
             performClick();
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                Log.d("TAG", "onTouch: ");
+                //Log.d("TAG", "onTouch: ");
 
                 int x = (int) event.getX();
                 int y = (int) event.getY();
@@ -134,8 +134,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(TypeImg.get(myFly.getImage()), flyRadius, flyRadius, true);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-               // Log.d("TAG", "draw: " + myFly);
-                paint.setAlpha(255*myFly.getTimer()/5);
+                Log.d("TAG", "draw: " + myFly.getTimer()/5);
+                paint.setAlpha((int)(255*myFly.getTimer()/5));
                 canvas.drawBitmap(rotatedBitmap, myFly.getPositionX(), myFly.getPositionY(), paint);
             }
         }
