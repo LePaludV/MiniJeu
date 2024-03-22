@@ -93,6 +93,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         setContentView(R.layout.activity_game);
 
         gameView = new GameView(this, findViewById(R.id.text_view_score_placeholder));
+        gameView.setState(this.globalState);
         ConstraintLayout constraintLayout = findViewById(R.id.layout_game_view);
         constraintLayout.addView(gameView);
 
@@ -151,7 +152,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Pas utilisé dans cet exemple
     }
 
     @Override
@@ -184,7 +184,6 @@ public class GameActivity extends Activity implements SensorEventListener {
         gameView.stopThread();
         sleep(100);
 
-        // Start the score activity
         Intent intent = new Intent(this, ScoreActivity.class);
         intent.putExtra("Score", gameView.getScore());
         startActivity(intent);
