@@ -4,4 +4,5 @@
     <string name="button_game_rules">Rules</string>
     <string name="button_game_credits">Credits</string>
     <string name="button_exit_game">Exit</string>
+    <string name="text_score">Score : </string>
 </resources>

@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,31 +26,38 @@ public class GameActivity extends Activity implements SensorEventListener {
     private Sensor accelerometer;
     private Sensor lightSensor;
 
-
     private float acceleration = 0.0f;
     private float currentAcceleration = 0.0f;
     private float lastAcceleration = 0.0f;
-    private Random random;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = this.getSharedPreferences("sharedFile", Context.MODE_PRIVATE);
+        setPreferenceWidthAndHeight(sharedPref);
+
+        setContentView(R.layout.activity_game);
+
+        gameView = new GameView(this, sharedPref, findViewById(R.id.text_view_score_placeholder));
+        ConstraintLayout constraintLayout = findViewById(R.id.layout_game_view);
+        constraintLayout.addView(gameView);
+
+        activateSensors();
+    }
+
+    private void activateSensors() {
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    private void setPreferenceWidthAndHeight(SharedPreferences sharedPref) {
         SharedPreferences.Editor editor = sharedPref.edit();
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         editor.putInt("screenWidth",  displayMetrics.widthPixels);
         editor.putInt("screenHeight",displayMetrics.heightPixels);
         editor.apply();
-
-        gameView = new GameView(this, sharedPref);
-        setContentView(gameView);
-
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-
-        random = new Random();
     }
 
     @Override

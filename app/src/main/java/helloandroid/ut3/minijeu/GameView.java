@@ -12,25 +12,29 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean areFliesActive = false;
 
     private final GameThread thread;
+    private int score = 0;
     private SharedPreferences sharedPref;
 
     private int screenWidth;
     private int screenHeight;
     ArrayList<Fly> Flys;
+    TextView viewScore;
 
-    public GameView(Context context, SharedPreferences sharedPref) {
+    public GameView(Context context, SharedPreferences sharedPref, TextView viewScore) {
         super(context);
         this.sharedPref = sharedPref;
+        this.viewScore = viewScore;
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
@@ -43,6 +47,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         for (int i = 0; i < 10; i++) {
             Flys.add(new Fly(100,getContext()));
         }
+
+        setOnTouchListener(touchListener);
     }
 
     @Override
@@ -90,6 +96,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    View.OnTouchListener touchListener = (v, event) -> {
+        float x = event.getX();
+        float y = event.getY();
+
+        performClick();
+        return true;
+    };
+
     public void update() {
         if (areFliesActive) {
             for (int i = 0; i < Flys.size(); i++) {
@@ -101,6 +115,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void wakeUpFlies() {
         areFliesActive = true;
+    }
+
+    public void updateScore() {
+        score++;
+        viewScore.setText(String.valueOf(score));
     }
     public void stopFlies() {
         areFliesActive = false;
