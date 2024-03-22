@@ -37,10 +37,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     int MAX_FLY = 5;
 
     private final ArrayList<FlyType> flyTypes = new ArrayList(Arrays.asList(
-            new FlyType(R.drawable.fly,3,1,75, R.raw.fly_hit),
-            new FlyType(R.drawable.fly2,5,3,100, R.raw.fly_hit),
-            new FlyType(R.drawable.fly, 10, 5, 50, R.raw.fly_hit),
-            new FlyType(R.drawable.guepe, 20, -10, 75, R.raw.bee_hit)
+            new FlyType(R.drawable.fly,3,1,120, R.raw.fly_hit),
+            new FlyType(R.drawable.fly2,5,3,135, R.raw.fly_hit),
+            new FlyType(R.drawable.fly, 15, 5, 110, R.raw.fly_hit),
+            new FlyType(R.drawable.guepe, 10, -10, 110, R.raw.bee_hit)
     ));
     private final Map<Integer,Bitmap> TypeImg =new HashMap<Integer,Bitmap>() {
         {
@@ -131,7 +131,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             paint.setColor(Color.rgb(250, 0, 0));
             for (int i = 0; i <Flys.size() ; i++) {
                 Fly myFly = Flys.get(i);
-                int flyRadius = myFly.getRadius();
+                int flyRadius = (int) (myFly.getRadius());
                 Matrix matrix = new Matrix();
                 matrix.postRotate(myFly.getAngleInDegrees());
 
@@ -204,6 +204,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void spawnMaya() {
+        mediaPlayer = MediaPlayer.create(this.getContext(), R.raw.oh_my_god);
+        mediaPlayer.start();
         Flys.add(new Fly(new FlyType(R.drawable.maya,10,-100,400,R.raw.bee_hit), getContext()));
     }
 
